@@ -7,11 +7,68 @@
   <title>Cadastro de Conjunto de Dados – (MESP)</title>
   <meta name="description"
     content="Formulário oficial de cadastro e atualização de conjuntos de dados no Portal dados.gov.br para o Ministério do Esporte (MESP).">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/auth.css">
+  <link rel="stylesheet" href="css/wizard.css">
+  <link rel="stylesheet" href="css/admin.css">
+  <link rel="stylesheet" href="css/modals.css">
+  <link rel="stylesheet" href="css/print.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body>
+
+  <!-- Painel de marca compartilhado pelas telas de login e troca de senha (clonado via JS
+       em cada [data-auth-brand], em vez de duplicar este bloco em cada tela). -->
+  <template id="tpl-auth-brand">
+    <div class="data-viz" aria-hidden="true">
+      <div class="viz-grid"></div>
+      <svg class="viz-streams" viewBox="0 0 600 800" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <linearGradient id="streamGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#73c7fb" stop-opacity="0"></stop>
+            <stop offset="50%" stop-color="#73c7fb" stop-opacity="0.85"></stop>
+            <stop offset="100%" stop-color="#73c7fb" stop-opacity="0"></stop>
+          </linearGradient>
+          <linearGradient id="streamGrad2" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#9fdcff" stop-opacity="0"></stop>
+            <stop offset="50%" stop-color="#9fdcff" stop-opacity="0.85"></stop>
+            <stop offset="100%" stop-color="#9fdcff" stop-opacity="0"></stop>
+          </linearGradient>
+        </defs>
+        <path class="stream stream-1" stroke="url(#streamGrad)" d="M -50 650 C 150 600, 250 500, 450 420 S 650 250, 800 180"></path>
+        <path class="stream stream-2" stroke="url(#streamGrad2)" d="M -50 200 C 100 280, 300 260, 420 380 S 600 550, 780 600"></path>
+        <path class="stream stream-3" stroke="url(#streamGrad)" d="M -50 450 C 200 420, 320 300, 480 320 S 650 420, 820 380"></path>
+        <path class="stream stream-4" stroke="url(#streamGrad2)" d="M -50 100 C 120 180, 260 150, 380 220 S 560 340, 760 300"></path>
+      </svg>
+      <span class="viz-tag" style="top: 15%; left: 4%; animation-delay: 0s;">Bolsas Atleta</span>
+      <span class="viz-tag" style="top: 12%; left: 64%; animation-delay: 1.5s;">Infraestrutura</span>
+      <span class="viz-tag" style="top: 60%; left: 6%; animation-delay: 0.8s;">Eventos</span>
+      <span class="viz-tag" style="top: 66%; left: 61%; animation-delay: 2.2s;">Patrocínio</span>
+      <span class="viz-tag" style="top: 38%; left: 76%; animation-delay: 1.2s;">Atletas</span>
+    </div>
+
+    <div class="pda-auth-brand-header">
+      <div class="pda-auth-brand-icon"><i class="fa-solid fa-circle-nodes"></i></div>
+      <div>
+        <div class="pda-auth-brand-name">Base de Dados MEsp <span class="brand-status-dot" title="Sistema operacional"></span></div>
+        <div class="pda-auth-brand-subname">MINISTÉRIO DO ESPORTE</div>
+      </div>
+    </div>
+
+    <div class="pda-auth-brand-main">
+      <div class="pda-auth-pill"><i class="fa-solid fa-circle-check"></i> Plano de Dados Abertos</div>
+      <h1 class="pda-auth-headline">Transparência que conecta dados e sociedade</h1>
+      <p class="pda-auth-desc">Preencha e consulte os conjuntos de dados abertos do Ministério do Esporte publicados em dados.gov.br, em um único ambiente integrado.</p>
+      <div class="pda-auth-badges">
+        <span class="pda-auth-badge"><i class="fa-solid fa-chart-column"></i> Dados atualizados</span>
+        <span class="pda-auth-badge"><i class="fa-solid fa-globe"></i> Acesso público</span>
+        <span class="pda-auth-badge"><i class="fa-solid fa-shield-halved"></i> Padrão dados.gov.br</span>
+      </div>
+    </div>
+
+    <div class="pda-auth-brand-footer">Ministério do Esporte • Governo Federal do Brasil</div>
+  </template>
 
   <!-- AUTH SCREENS (full-bleed, shown before login / when a password change is required) -->
   <div id="auth-screen">
@@ -24,60 +81,7 @@
         <div class="blue"></div>
       </div>
       <div class="pda-auth-body">
-        <div class="pda-auth-brand">
-          <svg class="pda-auth-brand-bg" viewBox="0 0 640 900" fill="none" preserveAspectRatio="xMaxYMin slice">
-            <g stroke="#4d7ab5" stroke-width="1.2" opacity="0.45">
-              <line x1="120" y1="140" x2="260" y2="220"></line>
-              <line x1="260" y1="220" x2="200" y2="340"></line>
-              <line x1="260" y1="220" x2="420" y2="200"></line>
-              <line x1="420" y1="200" x2="520" y2="300"></line>
-              <line x1="200" y1="340" x2="340" y2="420"></line>
-              <line x1="340" y1="420" x2="480" y2="400"></line>
-              <line x1="480" y1="400" x2="520" y2="300"></line>
-              <line x1="340" y1="420" x2="300" y2="560"></line>
-              <line x1="300" y1="560" x2="440" y2="620"></line>
-              <line x1="440" y1="620" x2="420" y2="740"></line>
-              <line x1="480" y1="400" x2="560" y2="520"></line>
-              <line x1="560" y1="520" x2="440" y2="620"></line>
-              <line x1="120" y1="140" x2="180" y2="60"></line>
-            </g>
-            <g fill="#dce8fb">
-              <circle cx="120" cy="140" r="4" opacity="0.7"></circle>
-              <circle cx="180" cy="60" r="3" opacity="0.5"></circle>
-              <circle cx="260" cy="220" r="7" opacity="0.85"></circle>
-              <circle cx="200" cy="340" r="4" opacity="0.6"></circle>
-              <circle cx="420" cy="200" r="5" opacity="0.7"></circle>
-              <circle cx="520" cy="300" r="8" opacity="0.9"></circle>
-              <circle cx="340" cy="420" r="6" opacity="0.75"></circle>
-              <circle cx="480" cy="400" r="4" opacity="0.6"></circle>
-              <circle cx="300" cy="560" r="5" opacity="0.65"></circle>
-              <circle cx="440" cy="620" r="7" opacity="0.85"></circle>
-              <circle cx="420" cy="740" r="4" opacity="0.5"></circle>
-              <circle cx="560" cy="520" r="5" opacity="0.7"></circle>
-            </g>
-          </svg>
-
-          <div class="pda-auth-brand-header">
-            <div class="pda-auth-brand-icon"><i class="fa-solid fa-circle-nodes"></i></div>
-            <div>
-              <div class="pda-auth-brand-name">Base de Dados MEsp</div>
-              <div class="pda-auth-brand-subname">MINISTÉRIO DO ESPORTE</div>
-            </div>
-          </div>
-
-          <div class="pda-auth-brand-main">
-            <div class="pda-auth-pill"><i class="fa-solid fa-circle-check"></i> Plano de Dados Abertos</div>
-            <h1 class="pda-auth-headline">Transparência que conecta dados e sociedade</h1>
-            <p class="pda-auth-desc">Preencha e consulte os conjuntos de dados abertos do Ministério do Esporte publicados em dados.gov.br, em um único ambiente integrado.</p>
-            <div class="pda-auth-badges">
-              <span class="pda-auth-badge"><i class="fa-solid fa-chart-column"></i> Dados atualizados</span>
-              <span class="pda-auth-badge"><i class="fa-solid fa-globe"></i> Acesso público</span>
-              <span class="pda-auth-badge"><i class="fa-solid fa-shield-halved"></i> Padrão dados.gov.br</span>
-            </div>
-          </div>
-
-          <div class="pda-auth-brand-footer">Ministério do Esporte • Governo Federal do Brasil</div>
-        </div>
+        <div class="pda-auth-brand" data-auth-brand></div>
 
         <div class="pda-auth-form-panel">
           <div class="pda-auth-form-box">
@@ -133,60 +137,7 @@
         <div class="blue"></div>
       </div>
       <div class="pda-auth-body">
-        <div class="pda-auth-brand">
-          <svg class="pda-auth-brand-bg" viewBox="0 0 640 900" fill="none" preserveAspectRatio="xMaxYMin slice">
-            <g stroke="#4d7ab5" stroke-width="1.2" opacity="0.45">
-              <line x1="120" y1="140" x2="260" y2="220"></line>
-              <line x1="260" y1="220" x2="200" y2="340"></line>
-              <line x1="260" y1="220" x2="420" y2="200"></line>
-              <line x1="420" y1="200" x2="520" y2="300"></line>
-              <line x1="200" y1="340" x2="340" y2="420"></line>
-              <line x1="340" y1="420" x2="480" y2="400"></line>
-              <line x1="480" y1="400" x2="520" y2="300"></line>
-              <line x1="340" y1="420" x2="300" y2="560"></line>
-              <line x1="300" y1="560" x2="440" y2="620"></line>
-              <line x1="440" y1="620" x2="420" y2="740"></line>
-              <line x1="480" y1="400" x2="560" y2="520"></line>
-              <line x1="560" y1="520" x2="440" y2="620"></line>
-              <line x1="120" y1="140" x2="180" y2="60"></line>
-            </g>
-            <g fill="#dce8fb">
-              <circle cx="120" cy="140" r="4" opacity="0.7"></circle>
-              <circle cx="180" cy="60" r="3" opacity="0.5"></circle>
-              <circle cx="260" cy="220" r="7" opacity="0.85"></circle>
-              <circle cx="200" cy="340" r="4" opacity="0.6"></circle>
-              <circle cx="420" cy="200" r="5" opacity="0.7"></circle>
-              <circle cx="520" cy="300" r="8" opacity="0.9"></circle>
-              <circle cx="340" cy="420" r="6" opacity="0.75"></circle>
-              <circle cx="480" cy="400" r="4" opacity="0.6"></circle>
-              <circle cx="300" cy="560" r="5" opacity="0.65"></circle>
-              <circle cx="440" cy="620" r="7" opacity="0.85"></circle>
-              <circle cx="420" cy="740" r="4" opacity="0.5"></circle>
-              <circle cx="560" cy="520" r="5" opacity="0.7"></circle>
-            </g>
-          </svg>
-
-          <div class="pda-auth-brand-header">
-            <div class="pda-auth-brand-icon"><i class="fa-solid fa-circle-nodes"></i></div>
-            <div>
-              <div class="pda-auth-brand-name">Base de Dados MEsp</div>
-              <div class="pda-auth-brand-subname">MINISTÉRIO DO ESPORTE</div>
-            </div>
-          </div>
-
-          <div class="pda-auth-brand-main">
-            <div class="pda-auth-pill"><i class="fa-solid fa-circle-check"></i> Plano de Dados Abertos</div>
-            <h1 class="pda-auth-headline">Transparência que conecta dados e sociedade</h1>
-            <p class="pda-auth-desc">Preencha e consulte os conjuntos de dados abertos do Ministério do Esporte publicados em dados.gov.br, em um único ambiente integrado.</p>
-            <div class="pda-auth-badges">
-              <span class="pda-auth-badge"><i class="fa-solid fa-chart-column"></i> Dados atualizados</span>
-              <span class="pda-auth-badge"><i class="fa-solid fa-globe"></i> Acesso público</span>
-              <span class="pda-auth-badge"><i class="fa-solid fa-shield-halved"></i> Padrão dados.gov.br</span>
-            </div>
-          </div>
-
-          <div class="pda-auth-brand-footer">Ministério do Esporte • Governo Federal do Brasil</div>
-        </div>
+        <div class="pda-auth-brand" data-auth-brand></div>
 
         <div class="pda-auth-form-panel">
           <div class="pda-auth-form-box">
@@ -266,25 +217,95 @@
 
     <!-- USER FORM VIEW CONTAINER -->
     <div id="user-view" style="display:none;">
-      <!-- Wizard Step Indicator Bar -->
-      <nav aria-label="Progresso do formulário" class="wizard-progress">
-        <div class="wizard-progress-bar" id="progress-bar"></div>
-        <div class="step-indicator active" data-step="1" id="indicator-step-1">
-          <div class="step-number">1</div>
-          <span class="step-title">Identificação do Conjunto</span>
-        </div>
-        <div class="step-indicator" data-step="2" id="indicator-step-2">
-          <div class="step-number">2</div>
-          <span class="step-title">Recursos e Dicionário</span>
-        </div>
-        <div class="step-indicator" data-step="3" id="indicator-step-3">
-          <div class="step-number">3</div>
-          <span class="step-title">Revisão e Envio</span>
-        </div>
-      </nav>
 
-      <!-- Main Form Element -->
-      <form id="dataset-form" novalidate>
+      <!-- ÁREA DASHBOARD: tela inicial da área, com o status das próprias bases -->
+      <div id="area-dashboard">
+        <div class="area-dashboard-header">
+          <div>
+            <h2><i class="fa-solid fa-table-columns"></i> Minhas Bases de Dados</h2>
+            <p>Acompanhe o status de envio, revisão pela Ouvidoria e confirmação da CGTI.</p>
+          </div>
+          <button type="button" class="btn btn-primary" id="btn-area-new-submission">
+            <i class="fa-solid fa-plus"></i> Novo Cadastro
+          </button>
+        </div>
+
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-icon blue"><i class="fa-solid fa-hourglass-half"></i></div>
+            <div class="metric-body">
+              <div class="metric-value" id="area-metric-em-analise">0</div>
+              <div class="metric-label">Em análise na Ouvidoria</div>
+            </div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-icon yellow"><i class="fa-solid fa-triangle-exclamation"></i></div>
+            <div class="metric-body">
+              <div class="metric-value" id="area-metric-rejeitadas">0</div>
+              <div class="metric-label">Rejeitadas (ação necessária)</div>
+            </div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-icon green"><i class="fa-solid fa-circle-check"></i></div>
+            <div class="metric-body">
+              <div class="metric-value" id="area-metric-concluidas">0</div>
+              <div class="metric-label">Aprovadas / Publicadas</div>
+            </div>
+          </div>
+        </div>
+
+        <div id="area-rejection-banners"></div>
+
+        <div class="dashboard-section-title">Histórico de envios</div>
+        <div class="table-responsive">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Data / Hora</th>
+                <th>Título da Base de Dados</th>
+                <th>Status</th>
+                <th style="text-align: center;">Ações</th>
+              </tr>
+            </thead>
+            <tbody id="area-submissions-body">
+              <!-- Populated dynamically by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- WIZARD: novo cadastro ou edição de uma resposta rejeitada -->
+      <div id="area-wizard" style="display:none;">
+        <button type="button" class="btn btn-secondary" id="btn-wizard-back-to-dashboard" style="margin-bottom: 1.5rem;">
+          <i class="fa-solid fa-arrow-left"></i> Voltar para Minhas Bases
+        </button>
+
+        <div class="rejection-banner" id="wizard-rejection-banner" style="display:none;">
+          <div>
+            <div class="rejection-banner-title"><i class="fa-solid fa-circle-exclamation"></i> Resposta rejeitada pela Ouvidoria</div>
+            <div class="rejection-banner-reason" id="wizard-rejection-reason-text"></div>
+          </div>
+        </div>
+
+        <!-- Wizard Step Indicator Bar -->
+        <nav aria-label="Progresso do formulário" class="wizard-progress">
+          <div class="wizard-progress-bar" id="progress-bar"></div>
+          <div class="step-indicator active" data-step="1" id="indicator-step-1">
+            <div class="step-number">1</div>
+            <span class="step-title">Identificação do Conjunto</span>
+          </div>
+          <div class="step-indicator" data-step="2" id="indicator-step-2">
+            <div class="step-number">2</div>
+            <span class="step-title">Recursos e Dicionário</span>
+          </div>
+          <div class="step-indicator" data-step="3" id="indicator-step-3">
+            <div class="step-number">3</div>
+            <span class="step-title">Revisão e Envio</span>
+          </div>
+        </nav>
+
+        <!-- Main Form Element -->
+        <form id="dataset-form" novalidate>
 
         <!-- SECTION 1: Identificação do Conjunto de Dados -->
         <section class="form-section active" id="section-step-1">
@@ -731,7 +752,69 @@
         </section>
 
       </form>
+      </div> <!-- End of #area-wizard -->
     </div> <!-- End of #user-view -->
+
+    <!-- OUVIDORIA VIEW CONTAINER -->
+    <div id="ouvidoria-view" class="admin-container" style="display: none;">
+      <div class="admin-header-bar">
+        <div>
+          <h2><i class="fa-solid fa-magnifying-glass-chart"></i> Painel da Ouvidoria</h2>
+          <p>Revise as respostas enviadas pelas áreas antes de encaminhar para a CGTI.</p>
+        </div>
+      </div>
+
+      <!-- Metrics Cards -->
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-icon blue"><i class="fa-solid fa-inbox"></i></div>
+          <div class="metric-body">
+            <div class="metric-value" id="ouv-metric-fila">0</div>
+            <div class="metric-label">Aguardando Revisão</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon yellow"><i class="fa-solid fa-triangle-exclamation"></i></div>
+          <div class="metric-body">
+            <div class="metric-value" id="ouv-metric-rejeitadas">0</div>
+            <div class="metric-label">Rejeitadas (aguardando reenvio)</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon green"><i class="fa-solid fa-circle-check"></i></div>
+          <div class="metric-body">
+            <div class="metric-value" id="ouv-metric-aprovadas">0</div>
+            <div class="metric-label">Aprovadas / Confirmadas</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filter & Search Bar -->
+      <div class="admin-search-box">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="ouv-search-input" class="form-input"
+          placeholder="Buscar por título da base, área técnica ou palavras-chave...">
+      </div>
+
+      <!-- Queue Table -->
+      <div class="table-responsive">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Área</th>
+              <th>Data / Hora</th>
+              <th>Título da Base de Dados</th>
+              <th>Área Técnica</th>
+              <th>Status</th>
+              <th style="text-align: center;">Ações</th>
+            </tr>
+          </thead>
+          <tbody id="ouv-table-body">
+            <!-- Populated dynamically by JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
 
     <!-- ADMIN VIEW CONTAINER -->
     <div id="admin-view" class="admin-container" style="display: none;">
@@ -793,6 +876,7 @@
               <th>Área Técnica</th>
               <th>Periodicidade</th>
               <th>Abertura</th>
+              <th>Status</th>
               <th style="text-align: center;">Ações</th>
             </tr>
           </thead>
@@ -834,6 +918,47 @@
     </div>
   </div>
 
+  <!-- Modal Ouvidoria: Revisão de Resposta -->
+  <div class="modal-backdrop" id="ouv-detail-modal">
+    <div class="modal-box modal-lg">
+      <div class="modal-header-flex">
+        <h3><i class="fa-solid fa-clipboard-check"></i> Revisar Resposta</h3>
+        <button type="button" class="btn-close-icon" id="btn-ouv-modal-close">&times;</button>
+      </div>
+      <div class="modal-body-scroll" id="ouv-modal-body">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <div id="ouv-reject-reason-box" style="display:none; margin-top: 1rem;">
+        <label for="ouv-reject-reason"
+          style="display:block; font-size:0.85rem; font-weight:600; color:var(--text-muted); margin-bottom:0.4rem;">
+          Motivo da rejeição (mostrado para a área ao reabrir a resposta)
+        </label>
+        <textarea id="ouv-reject-reason" class="form-textarea"
+          placeholder="Ex: A planilha contém CPF dos beneficiários, remova antes de reenviar."></textarea>
+      </div>
+
+      <div class="modal-footer-flex" style="flex-wrap: wrap; gap: 0.75rem;">
+        <div style="display:flex; gap:0.5rem; flex-wrap: wrap;">
+          <button type="button" class="btn btn-outline" id="btn-ouv-download-recurso" style="display:none;">
+            <i class="fa-solid fa-download"></i> Baixar Recurso
+          </button>
+          <button type="button" class="btn btn-outline" id="btn-ouv-download-dicionario" style="display:none;">
+            <i class="fa-solid fa-download"></i> Baixar Dicionário
+          </button>
+        </div>
+        <div style="display:flex; gap:0.5rem;">
+          <button type="button" class="btn btn-outline-danger" id="btn-ouv-reject">
+            <i class="fa-solid fa-xmark"></i> Rejeitar
+          </button>
+          <button type="button" class="btn btn-success" id="btn-ouv-approve">
+            <i class="fa-solid fa-check"></i> Aprovar e Enviar à CGTI
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Modal Cadastrar Nova Área -->
   <div class="modal-backdrop" id="new-area-modal">
     <div class="modal-box" style="text-align: left;">
@@ -842,6 +967,13 @@
         o formulário.</p>
 
       <form id="new-area-form" novalidate>
+        <div class="login-field">
+          <label for="new-area-role">Perfil de acesso</label>
+          <select id="new-area-role" class="form-select">
+            <option value="normal">Área (preenche o formulário)</option>
+            <option value="ouvidoria">Ouvidoria (revisa as respostas)</option>
+          </select>
+        </div>
         <div class="login-field">
           <label for="new-area-name">Nome da Área</label>
           <input type="text" id="new-area-name" class="form-input"
@@ -884,8 +1016,7 @@
   </div> <!-- End of #app-shell -->
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="supabase-config.js"></script>
-  <script src="script.js"></script>
+  <script type="module" src="js/main.js"></script>
 </body>
 
 </html>

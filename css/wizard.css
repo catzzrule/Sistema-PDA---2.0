@@ -1,0 +1,442 @@
+/* Multi-step form: progress bar, sections, questions, controls, summary/report table */
+
+/* Wizard / Step Progress */
+.wizard-progress {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  margin-bottom: 2.5rem;
+  padding: 0 1rem;
+}
+
+.wizard-progress::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 10%;
+  right: 10%;
+  height: 3px;
+  background: var(--border-color);
+  z-index: 1;
+  transform: translateY(-50%);
+}
+
+.wizard-progress-bar {
+  position: absolute;
+  top: 50%;
+  left: 10%;
+  height: 3px;
+  background: var(--primary-blue);
+  z-index: 1;
+  transform: translateY(-50%);
+  transition: width 0.3s ease;
+  width: 0%;
+}
+
+.step-indicator {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--bg-color);
+  padding: 0 0.5rem;
+  cursor: pointer;
+}
+
+.step-number {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 2px solid var(--border-color);
+  color: var(--text-muted);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+}
+
+.step-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  transition: var(--transition);
+  text-align: center;
+}
+
+.step-indicator.active .step-number {
+  background: var(--primary-blue);
+  border-color: var(--primary-blue);
+  color: white;
+  box-shadow: 0 0 0 4px rgba(19, 81, 180, 0.2);
+}
+
+.step-indicator.active .step-title {
+  color: var(--primary-blue);
+}
+
+.step-indicator.completed .step-number {
+  background: var(--accent-green);
+  border-color: var(--accent-green);
+  color: white;
+}
+
+/* Card Section */
+.form-section {
+  background: var(--card-bg);
+  border-radius: var(--radius-lg);
+  padding: 2.5rem;
+  box-shadow: var(--shadow-md);
+  margin-bottom: 2rem;
+  display: none;
+  animation: fadeIn 0.3s ease;
+}
+
+.form-section.active {
+  display: block;
+}
+
+.section-header {
+  border-bottom: 2px solid var(--bg-color);
+  padding-bottom: 1rem;
+  margin-bottom: 2rem;
+}
+
+.section-header h3 {
+  font-size: 1.4rem;
+  color: var(--primary-blue);
+  font-weight: 700;
+}
+
+.section-header p {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+/* Questions / Inputs */
+.question-card {
+  margin-bottom: 2rem;
+  padding: 1.25rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  background: #ffffff;
+  transition: var(--transition);
+}
+
+.question-card:focus-within, .question-card:hover {
+  border-color: var(--primary-blue);
+  box-shadow: var(--shadow-sm);
+}
+
+.question-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-bottom: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.question-number {
+  font-weight: 700;
+  color: var(--primary-blue);
+}
+
+.question-title {
+  font-weight: 600;
+  color: var(--text-main);
+  font-size: 1rem;
+}
+
+.required-star {
+  color: var(--error-color);
+  font-weight: bold;
+  margin-left: 2px;
+}
+
+.question-description {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 0.75rem;
+  font-style: italic;
+}
+
+/* Form Controls */
+.form-input, .form-textarea, .form-select {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  font-size: 0.95rem;
+  color: var(--text-main);
+  background: #ffffff;
+  transition: var(--transition);
+  font-family: inherit;
+}
+
+.form-input:focus, .form-textarea:focus, .form-select:focus {
+  outline: none;
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(19, 81, 180, 0.15);
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* Radio & Checkbox Options */
+.options-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.options-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-top: 0.5rem;
+}
+
+.option-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 0.85rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+  user-select: none;
+}
+
+.option-item:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+.option-item input[type="radio"],
+.option-item input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--primary-blue);
+  cursor: pointer;
+}
+
+.option-item.selected {
+  background: #eff6ff;
+  border-color: var(--primary-blue);
+  font-weight: 500;
+}
+
+/* Date Grid */
+.date-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+/* Drag & Drop File Upload */
+.file-upload-zone {
+  border: 2px dashed var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 2rem 1.5rem;
+  text-align: center;
+  background: #f8fafc;
+  cursor: pointer;
+  transition: var(--transition);
+  position: relative;
+}
+
+.file-upload-zone:hover, .file-upload-zone.dragover {
+  border-color: var(--primary-blue);
+  background: #eff6ff;
+}
+
+.file-upload-icon {
+  font-size: 2.2rem;
+  color: var(--primary-blue);
+  margin-bottom: 0.5rem;
+}
+
+.file-upload-text {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.file-upload-subtext {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 0.25rem;
+}
+
+.file-upload-input {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.file-preview {
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
+  color: var(--accent-green);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+/* Actions Footer Navigation */
+.wizard-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-color);
+}
+
+/* Summary Box / Report Table (Step 3, screen & print) */
+.summary-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.report-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.report-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border-color);
+  vertical-align: top;
+}
+
+.report-table tr:last-child td {
+  border-bottom: none;
+}
+
+.report-table tr:nth-child(even) {
+  background-color: #f8fafc;
+}
+
+.report-table .col-label {
+  width: 35%;
+  font-weight: 600;
+  color: var(--text-muted);
+  background-color: #f1f5f9;
+  border-right: 1px solid var(--border-color);
+}
+
+.report-table .col-value {
+  color: var(--text-main);
+  word-break: break-word;
+}
+
+.summary-section-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--primary-blue);
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 2px solid var(--primary-blue);
+}
+
+.print-header {
+  display: none;
+}
+
+/* Dashboard da Área: cabeçalho, banner de resposta rejeitada e lista de respostas */
+.area-dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.area-dashboard-header h2 {
+  font-size: 1.5rem;
+  color: #0f2540;
+  font-weight: 700;
+  margin-bottom: 0.35rem;
+}
+
+.area-dashboard-header p {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.rejection-banner {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-left: 4px solid var(--error-color);
+  border-radius: var(--radius-md);
+  padding: 1.1rem 1.25rem;
+  margin-bottom: 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.rejection-banner-title {
+  font-weight: 700;
+  color: #991b1b;
+  margin-bottom: 0.35rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.rejection-banner-reason {
+  font-size: 0.88rem;
+  color: #7f1d1d;
+}
+
+.dashboard-section-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 2rem 0 1rem 0;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .form-section {
+    padding: 1.25rem;
+  }
+  .options-grid {
+    grid-template-columns: 1fr;
+  }
+  .wizard-progress-bar, .wizard-progress::before {
+    display: none;
+  }
+  .wizard-progress {
+    flex-direction: row;
+    gap: 0.5rem;
+  }
+  .step-title {
+    font-size: 0.75rem;
+  }
+}

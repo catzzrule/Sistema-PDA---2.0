@@ -1,9 +1,12 @@
 // Edge Function: create-area-user
-// Cria um novo login de área (perfil "normal") no Supabase Auth.
+// Cria um novo login de área ou de ouvidoria no Supabase Auth.
 // Só pode ser chamada por um usuário já autenticado com perfil "master" (CGTI) —
 // isso é checado aqui dentro, no servidor, antes de usar a service_role key.
 // Nunca chame admin.createUser() a partir do navegador: a service_role key
 // dá acesso total ao banco e NUNCA deve existir em código de frontend.
+//
+// O perfil "master" nunca pode ser criado por aqui (só promoção manual via SQL
+// Editor, ver schema.sql) — só "normal" (default) ou "ouvidoria".
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
@@ -58,12 +61,16 @@ Deno.serve(async (req) => {
     const email = (body.email || '').trim();
     const password = body.password || '';
     const area = (body.area || '').trim();
+    const role = (body.role || 'normal').trim();
 
     if (!email || !password || !area) {
       return json({ error: 'Preencha e-mail, senha e nome da área.' }, 400);
     }
     if (password.length < 6) {
       return json({ error: 'A senha precisa ter pelo menos 6 caracteres.' }, 400);
+    }
+    if (!['normal', 'ouvidoria'].includes(role)) {
+      return json({ error: 'Perfil inválido.' }, 400);
     }
 
     // Cliente com privilégio administrativo — só existe aqui no servidor.
@@ -78,6 +85,20 @@ Deno.serve(async (req) => {
 
     if (createError) {
       return json({ error: createError.message }, 400);
+    }
+
+    // O trigger handle_new_user() sempre cria o profile como 'normal' — se o
+    // perfil pedido for 'ouvidoria', promove aqui, com a service_role key
+    // (que não é afetada pelos GRANTs de coluna que travam a role "authenticated").
+    if (role !== 'normal') {
+      const { error: roleError } = await adminClient
+        .from('profiles')
+        .update({ role })
+        .eq('id', created.user!.id);
+
+      if (roleError) {
+        return json({ error: `Usuário criado, mas falhou ao definir o perfil: ${roleError.message}` }, 500);
+      }
     }
 
     return json({ ok: true, user_id: created.user?.id });

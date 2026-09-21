@@ -1,0 +1,401 @@
+/* Auth screens: login and forced password change.
+   Paleta/tipografia próprias desta tela (Manrope + DM Sans), independentes do
+   resto do app (que usa Inter) — visual baseado na referência "Nova Interface". */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap');
+
+#auth-screen { min-height: 100vh; }
+
+.pda-auth-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+}
+
+.pda-auth-stripe {
+  display: flex;
+  width: 100%;
+  height: 4px;
+  flex-shrink: 0;
+}
+.pda-auth-stripe div { flex: 1; }
+.pda-auth-stripe .green { background: #0c9a4b; }
+.pda-auth-stripe .yellow { background: #ffcd07; }
+.pda-auth-stripe .blue { background: #0033a0; }
+
+.pda-auth-body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+.pda-auth-brand {
+  flex: 0 0 42%;
+  min-width: 380px;
+  position: relative;
+  background: linear-gradient(135deg, #0c294a 0%, #123c6a 50%, #14558b 100%);
+  padding: 3.5rem 3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+}
+
+/* ---------------------------------------------------------------------
+   Visualização animada de fluxos de dados (fundo do painel de marca)
+--------------------------------------------------------------------- */
+.data-viz {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 30% 20%, rgba(115, 199, 251, 0.16), transparent 60%),
+    radial-gradient(ellipse at 72% 82%, rgba(159, 220, 255, 0.12), transparent 60%);
+  animation: data-atmosphere 18s ease-in-out infinite alternate;
+}
+
+.viz-grid {
+  position: absolute;
+  inset: -30px;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.09) 1px, transparent 1px);
+  background-size: 28px 28px;
+  animation: grid-pan 24s linear infinite;
+}
+
+.viz-streams {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* A cor de cada stream vem do atributo stroke="url(#...)" no próprio <path>
+   (ver index.html), não daqui — precisa ser atributo, não propriedade CSS,
+   porque o id do gradiente é reescrito em tempo de execução (main.js) para
+   não colidir quando o <template> é clonado mais de uma vez na página. */
+.stream {
+  fill: none;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-dasharray: 6 14;
+}
+.stream-1 { animation: stream-flow 4s linear infinite; }
+.stream-2 { animation: stream-flow 5s linear infinite; animation-delay: -1s; }
+.stream-3 { animation: stream-flow 3.5s linear infinite; animation-delay: -2.4s; }
+.stream-4 { animation: stream-flow 4.5s linear infinite; animation-delay: -0.6s; }
+
+.viz-tag {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: #dce8fb;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.35rem 0.7rem;
+  border-radius: 8px;
+  opacity: 0;
+  transform: translateY(8px);
+  animation: tag-fade 6s ease-in-out infinite;
+  white-space: nowrap;
+}
+
+@keyframes stream-flow { to { stroke-dashoffset: -400; } }
+@keyframes grid-pan { to { transform: translate(28px, 28px); } }
+@keyframes data-atmosphere { to { transform: scale(1.06); } }
+@keyframes tag-fade {
+  0%, 100% { opacity: 0; transform: translateY(8px); }
+  15%, 85% { opacity: 1; transform: translateY(0); }
+}
+
+.pda-auth-brand-header {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.pda-auth-brand-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #dce8fb;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.pda-auth-brand-name {
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.brand-status-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-left: 0.4rem;
+  border-radius: 50%;
+  background: #65d392;
+  vertical-align: middle;
+  animation: breathe 2.2s ease-in-out infinite;
+}
+@keyframes breathe {
+  50% { transform: scale(0.75); opacity: 0.65; }
+}
+
+.pda-auth-brand-subname {
+  color: #9db4d6;
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+}
+
+.pda-auth-brand-main {
+  position: relative;
+  z-index: 1;
+  max-width: 480px;
+}
+
+.pda-auth-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 20px;
+  padding: 0.4rem 0.9rem;
+  margin-bottom: 1.25rem;
+  color: #dce8fb;
+  font-size: 0.78rem;
+  font-weight: 500;
+}
+.pda-auth-pill i { color: #7fd39b; font-size: 0.72rem; }
+
+.pda-auth-headline {
+  font-family: 'Manrope', system-ui, sans-serif;
+  color: #ffffff;
+  font-size: clamp(1.6rem, 1.2rem + 1.6vw, 2.1rem);
+  font-weight: 800;
+  line-height: 1.25;
+  margin: 0 0 1rem 0;
+}
+
+.pda-auth-desc {
+  color: #b7c8e0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin: 0 0 1.75rem 0;
+}
+
+.pda-auth-badges {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.pda-auth-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 8px;
+  padding: 0.6rem 0.85rem;
+  color: #dce8fb;
+  font-size: 0.8rem;
+}
+
+.pda-auth-brand-footer {
+  position: relative;
+  z-index: 1;
+  color: #7a90b3;
+  font-size: 0.78rem;
+}
+
+.pda-auth-form-panel {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1.5rem;
+  background: #f9fbfe;
+}
+
+.pda-auth-form-box {
+  width: 100%;
+  max-width: 405px;
+  animation: reveal 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes reveal {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.pda-auth-form-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  background: #eef4ff;
+  color: #1d5fc7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  margin: 0 auto 1.5rem auto;
+}
+
+.pda-auth-form-box h2 {
+  font-family: 'Manrope', system-ui, sans-serif;
+  text-align: center;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #102746;
+  margin: 0 0 0.5rem 0;
+}
+
+.pda-auth-form-box > p {
+  text-align: center;
+  font-size: 0.85rem;
+  color: #738195;
+  line-height: 1.5;
+  margin: 0 0 2rem 0;
+}
+
+.pda-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+}
+
+.pda-field-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pda-field label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.pda-link-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  color: #1d5fc7;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+.pda-link-btn:hover { text-decoration: underline; color: #1555b7; }
+
+.pda-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  height: 49px;
+  border: 1px solid #d7e0ea;
+  border-radius: 8px;
+  padding: 0 14px;
+  background: #ffffff;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.pda-input-wrap:focus-within {
+  border-color: #1d5fc7;
+  box-shadow: 0 0 0 3px rgba(29, 95, 199, 0.15);
+}
+.pda-input-wrap i { color: #9aaabd; font-size: 0.9rem; }
+.pda-input-wrap input {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 0.875rem;
+  color: #102746;
+  width: 100%;
+  height: 100%;
+}
+
+.pda-eye-btn {
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0.2rem;
+  display: flex;
+  align-items: center;
+  color: #9aaabd;
+}
+
+.pda-submit-btn {
+  width: 100%;
+  height: 49px;
+  margin-top: 0.5rem;
+  background: #1d5fc7;
+  color: #ffffff;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+.pda-submit-btn:hover {
+  background: #1555b7;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px -6px rgba(29, 95, 199, 0.45);
+}
+.pda-submit-btn:active { transform: translateY(0); }
+.pda-submit-btn:disabled { opacity: 0.7; cursor: default; transform: none; box-shadow: none; }
+
+.pda-auth-footer-note {
+  text-align: center;
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid #eef1f4;
+  font-size: 0.8rem;
+  color: #738195;
+}
+.pda-auth-footer-note strong { color: #1d5fc7; font-weight: 600; }
+
+.pda-error {
+  color: var(--error-color);
+  font-size: 0.82rem;
+  margin: -0.25rem 0 0.25rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+@media (max-width: 900px) {
+  .pda-auth-brand {
+    flex: none;
+    min-width: 0;
+    padding: 1.75rem 1.5rem 2rem 1.5rem;
+  }
+  .pda-auth-body { flex-direction: column; }
+  .pda-auth-desc, .pda-auth-badges, .viz-tag { display: none; }
+  .data-viz { opacity: 0.55; }
+  .pda-auth-form-panel { padding: 2rem 1.25rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .data-viz, .viz-grid, .stream, .viz-tag, .brand-status-dot, .pda-auth-form-box {
+    animation: none !important;
+  }
+}

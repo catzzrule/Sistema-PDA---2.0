@@ -1,0 +1,261 @@
+/* Admin dashboard: metrics, search, submissions table */
+
+.admin-container {
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+  margin: 0 -1.5rem;
+  padding: 2.5rem 2rem;
+  animation: fadeIn 0.3s ease;
+}
+
+.admin-header-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 2rem;
+  border-bottom: none;
+  padding: 0 0 2rem 0;
+  margin-bottom: 2.5rem;
+}
+
+.admin-header-bar > div:first-child {
+  flex: 1;
+}
+
+.admin-header-bar h2 {
+  font-size: 1.75rem;
+  color: #0f2540;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0 0 0.5rem 0;
+}
+
+.admin-header-bar h2 i {
+  color: #1550c0;
+  font-size: 1.3rem;
+}
+
+.admin-header-bar p {
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin-top: 0;
+  font-weight: 400;
+}
+
+.admin-top-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* Metrics Grid */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.metric-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1.25rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.9rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s ease;
+}
+
+.metric-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
+  border-color: #d1d5db;
+}
+
+.metric-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.metric-icon.blue { background: #eff6ff; color: #1550c0; }
+.metric-icon.green { background: #ecfdf5; color: #10b981; }
+.metric-icon.yellow { background: #fef3c7; color: #f59e0b; }
+
+.metric-body { flex: 1; }
+
+.metric-value {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #1f2937;
+  line-height: 1.2;
+}
+
+.metric-label {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #6b7280;
+  margin-top: 0.25rem;
+}
+
+/* Admin Search Bar */
+.admin-search-box {
+  position: relative;
+  margin-bottom: 2rem;
+}
+
+.admin-search-box i {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9ca3af;
+  font-size: 0.95rem;
+}
+
+.admin-search-box input {
+  padding-left: 2.75rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 0.75rem 1rem 0.75rem 2.75rem;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.admin-search-box input:focus {
+  border-color: #1550c0;
+  box-shadow: 0 0 0 3px rgba(21, 80, 192, 0.1);
+}
+
+/* Admin Table */
+.table-responsive {
+  overflow-x: auto;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  background: white;
+  text-align: left;
+}
+
+.admin-table th {
+  background: #f9fafb;
+  color: #6b7280;
+  font-weight: 600;
+  padding: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.admin-table td {
+  padding: 0.9rem 1rem;
+  border-bottom: 1px solid #f3f4f6;
+  color: #1f2937;
+  vertical-align: middle;
+}
+
+.admin-table tbody tr:hover {
+  background: #f9fafb;
+}
+
+.admin-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.badge-aberto {
+  background: #d1fae5;
+  color: #065f46;
+  padding: 0.25rem 0.65rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.badge-aberto::before {
+  content: "✓";
+  font-weight: 700;
+}
+
+.badge-nao-aberto {
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 0.25rem 0.65rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.badge-nao-aberto::before {
+  content: "—";
+  font-weight: 700;
+}
+
+/* Status do workflow de aprovação (Área -> Ouvidoria -> CGTI) */
+.badge-status {
+  padding: 0.25rem 0.65rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  white-space: nowrap;
+}
+
+.badge-status-em_analise { background: #e0f2fe; color: #0369a1; }
+.badge-status-rejeitada { background: #fee2e2; color: #991b1b; }
+.badge-status-aprovada_ouvidoria { background: #fef3c7; color: #92400e; }
+.badge-status-confirmada_cgti { background: #d1fae5; color: #065f46; }
+
+.btn-action-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  background: white;
+  color: var(--text-main);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+  margin: 0 0.15rem;
+}
+
+.btn-action-icon:hover {
+  background: #f1f5f9;
+  color: var(--primary-blue);
+  border-color: var(--primary-blue);
+}
+
+.btn-action-icon.danger:hover {
+  background: #fef2f2;
+  color: var(--error-color);
+  border-color: var(--error-color);
+}
