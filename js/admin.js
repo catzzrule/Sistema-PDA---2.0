@@ -96,15 +96,43 @@ function viewSubmissionDetail(id) {
   if (!item) return;
   activeDetailSubmission = item;
 
-  const publicLinkBlock = (item.status === 'confirmada_cgti' && item.portalLink) ? `
-    <div class="report-table" style="padding: 0.9rem 1.1rem; margin-bottom: 1.5rem; box-shadow: none;">
-      <strong>Link público:</strong>
-      <a href="${escapeHtml(item.portalLink)}" target="_blank" rel="noopener">${escapeHtml(item.portalLink)}</a>
-    </div>` : '';
+  let publicLinksBlock = '';
+  if (item.status === 'confirmada_cgti') {
+    const rows = [
+      ...getFileLinks(item).map(fl => ({ label: `Link do ${fl.label} (${fl.filename})`, url: fl.url })),
+      { label: 'Link da ficha completa (metadados)', url: buildFichaLink(item.id) },
+    ];
 
-  adminModalBody.innerHTML = generateReportHTML(item.data, item.id, item.timestamp, toMeta(item)) + publicLinkBlock;
+    publicLinksBlock = `
+      <div class="report-table" style="padding: 0.9rem 1.1rem; margin-bottom: 1.5rem; box-shadow: none;">
+        <strong style="display: block; margin-bottom: 0.5rem;">Links públicos</strong>
+        ${rows.map(r => `
+          <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.4rem; flex-wrap: wrap;">
+            <span style="font-size: 0.85rem; color: var(--text-muted);">${escapeHtml(r.label)}:</span>
+            <a href="${escapeHtml(r.url)}" target="_blank" rel="noopener" style="font-size: 0.85rem; word-break: break-all;">${escapeHtml(r.url)}</a>
+            <button type="button" class="btn-action-icon" data-copy-url="${escapeHtml(r.url)}" title="Copiar link" style="margin-left: auto;">
+              <i class="fa-solid fa-copy"></i>
+            </button>
+          </div>
+        `).join('')}
+      </div>`;
+  }
+
+  adminModalBody.innerHTML = generateReportHTML(item.data, item.id, item.timestamp, toMeta(item)) + publicLinksBlock;
   adminDetailModal.classList.add('show');
 }
+
+adminModalBody?.addEventListener('click', async (e) => {
+  const btn = e.target.closest('[data-copy-url]');
+  if (!btn) return;
+  const url = btn.dataset.copyUrl;
+  try {
+    await navigator.clipboard.writeText(url);
+    showToast('Link copiado para a área de transferência.');
+  } catch {
+    showToast(url, 'info');
+  }
+});
 
 async function deleteSubmission(id) {
   if (!confirm('Tem certeza que deseja excluir esta resposta?')) return;
@@ -117,22 +145,48 @@ async function deleteSubmission(id) {
   showToast('Resposta excluída com sucesso.');
 }
 
-// Monta o link público de "publico.html?id=..." a partir da URL atual, sem
-// depender de estar em / ou em /algum-subcaminho/ (ex: GitHub Pages de projeto).
-function buildPublicLink(id) {
-  const basePath = window.location.pathname.replace(/[^/]*$/, '');
-  return `${window.location.origin}${basePath}publico.html?id=${id}`;
+// Monta links a partir da URL atual, sem depender de estar em / ou em
+// /algum-subcaminho/ (ex: GitHub Pages de projeto).
+function basePath() {
+  return window.location.pathname.replace(/[^/]*$/, '');
 }
 
-// Gera o link público permanente da base (view public.public_datasets, ver
-// schema.sql — só metadados, nunca expira porque nunca é regenerado depois de
-// criado) e confirma o recebimento pela CGTI. A integração real com a API do
-// dados.gov.br fica para uma etapa futura; por enquanto este link já serve
-// pra disponibilizar a ficha publicamente, sem login.
-async function confirmReceipt(id) {
-  if (!confirm('Confirmar o recebimento desta base? Isso vai gerar o link público e marcar a resposta como publicada.')) return;
+// Ficha com os metadados da base (publico.html).
+function buildFichaLink(id) {
+  return `${window.location.origin}${basePath()}publico.html?id=${id}`;
+}
 
-  const portalLink = buildPublicLink(id);
+// Abre o arquivo em si, em tela cheia, tipo "Excel Online" — sem passar pela
+// ficha. campo é 'recurso' (q22) ou 'dicionario' (q25).
+function buildFileLink(id, campo) {
+  return `${window.location.origin}${basePath()}arquivo.html?id=${id}&campo=${campo}`;
+}
+
+// Um link por arquivo anexado (se houver dois, dois links — nunca um só
+// combinando os dois, é isso que faz o link abrir a planilha direto).
+function getFileLinks(item) {
+  const links = [];
+  if (item.data.q22_arquivo_recurso_path) {
+    links.push({ label: 'Recurso', filename: item.data.q22_arquivo_recurso, url: buildFileLink(item.id, 'recurso') });
+  }
+  if (item.data.q25_arquivo_dicionario_path) {
+    links.push({ label: 'Dicionário', filename: item.data.q25_arquivo_dicionario, url: buildFileLink(item.id, 'dicionario') });
+  }
+  return links;
+}
+
+// Gera o(s) link(s) público(s) permanente(s) da base (view public.public_datasets
+// + policy de Storage, ver schema.sql) e confirma o recebimento pela CGTI. A
+// integração real com a API do dados.gov.br fica para uma etapa futura; por
+// enquanto estes links já servem pra disponibilizar o arquivo publicamente,
+// sem login, abrindo direto (não só a ficha de metadados).
+async function confirmReceipt(id) {
+  if (!confirm('Confirmar o recebimento desta base? Isso vai gerar os links públicos e marcar a resposta como publicada.')) return;
+
+  const item = cachedSubmissions.find(s => s.id === id);
+  const fileLinks = item ? getFileLinks(item) : [];
+  const portalLink = fileLinks[0]?.url || buildFichaLink(id);
+
   const { error } = await sb
     .from('submissions')
     .update({ status: 'confirmada_cgti', portal_link: portalLink, portal_link_generated_at: new Date().toISOString() })
@@ -143,15 +197,16 @@ async function confirmReceipt(id) {
     return;
   }
   await refreshSubmissions();
-  showToast('Recebimento confirmado! Link público gerado.');
+  showToast('Recebimento confirmado! Link(s) público(s) gerado(s).');
 }
 
 async function copyPublicLink(id) {
   const item = cachedSubmissions.find(s => s.id === id);
-  const link = item?.portalLink || buildPublicLink(id);
+  const fileLinks = item ? getFileLinks(item) : [];
+  const link = fileLinks[0]?.url || item?.portalLink || buildFichaLink(id);
   try {
     await navigator.clipboard.writeText(link);
-    showToast('Link público copiado para a área de transferência.');
+    showToast('Link copiado para a área de transferência.');
   } catch {
     showToast(link, 'info');
   }

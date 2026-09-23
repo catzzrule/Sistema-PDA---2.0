@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Visualizar Arquivo – Portal dados.gov.br (MESP)</title>
+  <meta name="description"
+    content="Visualização direta de um arquivo de uma base de dados abertos confirmada pelo Ministério do Esporte (MESP).">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/wizard.css">
+  <link rel="stylesheet" href="css/file-viewer.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body { background: #f8fafc; }
+
+    .arquivo-topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      padding: 0.9rem 1.5rem;
+      background: #ffffff;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .arquivo-topbar strong { color: var(--text-main); }
+
+    .arquivo-topbar a {
+      color: var(--primary-blue);
+      font-size: 0.85rem;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      white-space: nowrap;
+    }
+    .arquivo-topbar a:hover { text-decoration: underline; }
+
+    #arquivo-content { flex: 1; display: flex; flex-direction: column; }
+
+    .public-state {
+      text-align: center;
+      padding: 4rem 1.5rem;
+      color: var(--text-muted);
+    }
+    .public-state i {
+      font-size: 2.2rem;
+      margin-bottom: 1rem;
+      display: block;
+      color: var(--text-light);
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="arquivo-topbar" id="arquivo-topbar">
+    <div><strong>Carregando...</strong></div>
+  </div>
+
+  <main id="arquivo-content">
+    <div class="public-state">
+      <i class="fa-solid fa-spinner fa-spin"></i>
+      Carregando arquivo...
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script type="module" src="js/arquivo.js"></script>
+</body>
+
+</html>
