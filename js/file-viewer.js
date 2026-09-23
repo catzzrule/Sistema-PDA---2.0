@@ -113,16 +113,12 @@ function renderImageInto(body, url) {
   body.appendChild(img);
 }
 
-function renderDownloadFallbackInto(body, url, filename) {
+function renderDownloadFallbackInto(body) {
   const wrap = document.createElement('div');
   wrap.className = 'file-preview-fallback';
   wrap.innerHTML = `
     <i class="fa-solid fa-file-arrow-down" style="font-size: 1.8rem; display: block; margin-bottom: 0.75rem;"></i>
-    Pré-visualização não disponível para este tipo de arquivo.<br>
-    <a href="${escapeHtml(url)}" target="_blank" rel="noopener" class="btn btn-outline"
-      style="display: inline-flex; margin-top: 0.75rem;">
-      <i class="fa-solid fa-download"></i> Baixar ${escapeHtml(filename)}
-    </a>
+    Pré-visualização não disponível para este tipo de arquivo — use o botão "Baixar arquivo" acima.
   `;
   body.appendChild(wrap);
 }
@@ -155,10 +151,18 @@ export async function mountFilePreview(container, label, filename, path, { fullp
   container.appendChild(card);
 
   let signedUrl;
+  let downloadUrl;
   try {
     const { data, error } = await sb.storage.from(STORAGE_BUCKET).createSignedUrl(path, SIGNED_URL_TTL_SECONDS);
     if (error || !data?.signedUrl) throw new Error(error?.message || 'Link indisponível.');
     signedUrl = data.signedUrl;
+
+    // Link separado com Content-Disposition: attachment (via a opção
+    // "download"), pra baixar de verdade em vez de só abrir no navegador —
+    // o link de visualização acima fica sem essa opção de propósito, senão
+    // o PDF/imagem também forçaria download em vez de abrir inline.
+    const { data: dlData } = await sb.storage.from(STORAGE_BUCKET).createSignedUrl(path, SIGNED_URL_TTL_SECONDS, { download: filename });
+    downloadUrl = dlData?.signedUrl || signedUrl;
   } catch (err) {
     status.textContent = '';
     body.innerHTML = `<div class="file-preview-fallback">Não foi possível carregar este arquivo agora.</div>`;
@@ -166,6 +170,15 @@ export async function mountFilePreview(container, label, filename, path, { fullp
   }
 
   status.textContent = '';
+
+  const downloadBtn = document.createElement('a');
+  downloadBtn.href = downloadUrl;
+  downloadBtn.className = 'btn btn-outline';
+  downloadBtn.style.padding = '0.4rem 0.8rem';
+  downloadBtn.style.fontSize = '0.8rem';
+  downloadBtn.innerHTML = '<i class="fa-solid fa-download"></i> Baixar arquivo';
+  header.appendChild(downloadBtn);
+
   const ext = getExtension(filename);
 
   if (SPREADSHEET_EXTS.includes(ext)) {
@@ -186,5 +199,5 @@ export async function mountFilePreview(container, label, filename, path, { fullp
     return;
   }
 
-  renderDownloadFallbackInto(body, signedUrl, filename);
+  renderDownloadFallbackInto(body);
 }
