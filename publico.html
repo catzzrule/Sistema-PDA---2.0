@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Base de Dados Publicada – Portal dados.gov.br (MESP)</title>
+  <meta name="description"
+    content="Ficha pública de um conjunto de dados abertos confirmado pelo Ministério do Esporte (MESP).">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/wizard.css">
+  <link rel="stylesheet" href="css/print.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .public-container {
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 0 1.5rem;
+      flex: 1;
+      width: 100%;
+    }
+
+    .public-state {
+      text-align: center;
+      padding: 4rem 1.5rem;
+      color: var(--text-muted);
+    }
+
+    .public-state i {
+      font-size: 2.2rem;
+      margin-bottom: 1rem;
+      display: block;
+      color: var(--text-light);
+    }
+
+    .public-note {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: var(--radius-md);
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.5rem;
+      font-size: 0.85rem;
+      color: #1e3a8a;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="gov-header">
+    <div class="gov-header-container">
+      <div class="gov-logo-group">
+        <div class="gov-flag-stripe">
+          <div class="green"></div>
+          <div class="yellow"></div>
+          <div class="blue"></div>
+        </div>
+        <div class="gov-header-titles">
+          <h1>Base de Dados MEsp</h1>
+          <p>Ministério do Esporte (MESP) • Plano de Dados Abertos (PDA)</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="public-container">
+    <div class="public-note">
+      <i class="fa-solid fa-circle-info"></i>
+      <span>Esta é a ficha pública de uma base de dados já confirmada pela CGTI. Os arquivos anexados (recurso e
+        dicionário de dados) ficam disponíveis apenas dentro do sistema — esta página mostra só os metadados da
+        base.</span>
+    </div>
+
+    <div id="public-content">
+      <div class="public-state" id="public-loading">
+        <i class="fa-solid fa-spinner fa-spin"></i>
+        Carregando ficha da base de dados...
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>Portal dados.gov.br • Ministério do Esporte (MESP) • Desenvolvido com Padrão Digital Gov.br</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script type="module" src="js/public.js"></script>
+</body>
+
+</html>

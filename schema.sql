@@ -250,6 +250,32 @@ create policy "submissions_delete_master" on public.submissions
   for delete using (public.is_master());
 
 -- ----------------------------------------------------------------------------
+-- 3.1 Link público de disponibilização (gerado quando a CGTI confirma).
+--     A "Ficha de Cadastro de Conjunto de Dados" da base fica acessível por um
+--     link sem login (só metadados — os arquivos anexados continuam restritos
+--     ao sistema, o Storage não é liberado pra "anon").
+--
+--     Isto é uma VIEW, não uma policy de RLS na própria tabela: criada por um
+--     usuário com privilégio (SQL Editor), ela ignora a RLS restritiva de
+--     "submissions" (dono de tabela é isento de RLS, sem FORCE ROW LEVEL
+--     SECURITY) — então o WHERE abaixo é a única barreira, e a lista de
+--     colunas é a única superfície exposta. De propósito NÃO inclui user_id,
+--     reviewed_by, confirmed_by nem rejection_reason.
+-- ----------------------------------------------------------------------------
+create or replace view public.public_datasets as
+select
+  id,
+  area,
+  data,
+  created_at,
+  confirmed_at,
+  portal_link
+from public.submissions
+where status = 'confirmada_cgti';
+
+grant select on public.public_datasets to anon, authenticated;
+
+-- ----------------------------------------------------------------------------
 -- 4. Armazenamento de arquivos (recurso + dicionário de dados anexados)
 -- ----------------------------------------------------------------------------
 insert into storage.buckets (id, name, public)

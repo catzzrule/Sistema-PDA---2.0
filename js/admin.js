@@ -68,6 +68,10 @@ function renderAdminTable() {
         <button type="button" class="btn-action-icon" data-confirm-id="${escapeHtml(item.id)}" title="Confirmar Recebimento">
           <i class="fa-solid fa-check"></i>
         </button>` : ''}
+        ${item.status === 'confirmada_cgti' ? `
+        <button type="button" class="btn-action-icon" data-copy-link-id="${escapeHtml(item.id)}" title="Copiar Link Público">
+          <i class="fa-solid fa-link"></i>
+        </button>` : ''}
         <button type="button" class="btn-action-icon" data-view-id="${escapeHtml(item.id)}" title="Ver Detalhes">
           <i class="fa-solid fa-eye"></i>
         </button>
@@ -91,7 +95,14 @@ function viewSubmissionDetail(id) {
   const item = cachedSubmissions.find(s => s.id === id);
   if (!item) return;
   activeDetailSubmission = item;
-  adminModalBody.innerHTML = generateReportHTML(item.data, item.id, item.timestamp, toMeta(item));
+
+  const publicLinkBlock = (item.status === 'confirmada_cgti' && item.portalLink) ? `
+    <div class="report-table" style="padding: 0.9rem 1.1rem; margin-bottom: 1.5rem; box-shadow: none;">
+      <strong>Link público:</strong>
+      <a href="${escapeHtml(item.portalLink)}" target="_blank" rel="noopener">${escapeHtml(item.portalLink)}</a>
+    </div>` : '';
+
+  adminModalBody.innerHTML = generateReportHTML(item.data, item.id, item.timestamp, toMeta(item)) + publicLinkBlock;
   adminDetailModal.classList.add('show');
 }
 
@@ -106,14 +117,22 @@ async function deleteSubmission(id) {
   showToast('Resposta excluída com sucesso.');
 }
 
-// Gera um link permanente (placeholder) para a base e confirma o recebimento
-// pela CGTI. A integração real com a API do dados.gov.br fica para uma etapa
-// futura — este link é só um identificador interno estável, não expira porque
-// nunca é regenerado depois de criado.
-async function confirmReceipt(id) {
-  if (!confirm('Confirmar o recebimento desta base? Isso vai gerar o link permanente e marcar a resposta como publicada.')) return;
+// Monta o link público de "publico.html?id=..." a partir da URL atual, sem
+// depender de estar em / ou em /algum-subcaminho/ (ex: GitHub Pages de projeto).
+function buildPublicLink(id) {
+  const basePath = window.location.pathname.replace(/[^/]*$/, '');
+  return `${window.location.origin}${basePath}publico.html?id=${id}`;
+}
 
-  const portalLink = `${window.location.origin}${window.location.pathname}#/base/${id}`;
+// Gera o link público permanente da base (view public.public_datasets, ver
+// schema.sql — só metadados, nunca expira porque nunca é regenerado depois de
+// criado) e confirma o recebimento pela CGTI. A integração real com a API do
+// dados.gov.br fica para uma etapa futura; por enquanto este link já serve
+// pra disponibilizar a ficha publicamente, sem login.
+async function confirmReceipt(id) {
+  if (!confirm('Confirmar o recebimento desta base? Isso vai gerar o link público e marcar a resposta como publicada.')) return;
+
+  const portalLink = buildPublicLink(id);
   const { error } = await sb
     .from('submissions')
     .update({ status: 'confirmada_cgti', portal_link: portalLink, portal_link_generated_at: new Date().toISOString() })
@@ -124,7 +143,18 @@ async function confirmReceipt(id) {
     return;
   }
   await refreshSubmissions();
-  showToast('Recebimento confirmado! Link permanente gerado (integração com dados.gov.br ainda pendente).');
+  showToast('Recebimento confirmado! Link público gerado.');
+}
+
+async function copyPublicLink(id) {
+  const item = cachedSubmissions.find(s => s.id === id);
+  const link = item?.portalLink || buildPublicLink(id);
+  try {
+    await navigator.clipboard.writeText(link);
+    showToast('Link público copiado para a área de transferência.');
+  } catch {
+    showToast(link, 'info');
+  }
 }
 
 document.getElementById('admin-table-body')?.addEventListener('click', (e) => {
@@ -136,6 +166,9 @@ document.getElementById('admin-table-body')?.addEventListener('click', (e) => {
 
   const confirmBtn = e.target.closest('[data-confirm-id]');
   if (confirmBtn) return confirmReceipt(confirmBtn.dataset.confirmId);
+
+  const copyLinkBtn = e.target.closest('[data-copy-link-id]');
+  if (copyLinkBtn) return copyPublicLink(copyLinkBtn.dataset.copyLinkId);
 });
 
 document.getElementById('btn-admin-modal-close')?.addEventListener('click', () => adminDetailModal.classList.remove('show'));
