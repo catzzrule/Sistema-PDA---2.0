@@ -316,6 +316,31 @@ create policy "pda_arquivos_update_own" on storage.objects
     and (storage.foldername(name))[1] = auth.uid()::text
   );
 
+-- Acesso público (sem login) ao arquivo em si — só para os caminhos que
+-- pertencem a uma base já confirmada pela CGTI. É isto que permite a
+-- publico.html abrir a planilha "como se fosse online" (via link assinado de
+-- curta duração gerado na hora), não só a ficha de metadados. Nenhum outro
+-- arquivo do bucket fica exposto.
+--
+-- IMPORTANTE: a subquery aqui usa public.public_datasets (a view acima), não
+-- public.submissions diretamente. Uma subquery dentro de uma policy de RLS
+-- ainda é filtrada pela RLS da tabela consultada — então, se fosse
+-- "submissions" aqui, a policy restritiva de "submissions_select" bloquearia
+-- o papel "anon" (que não é dono/master/ouvidoria) e o EXISTS nunca seria
+-- verdadeiro. A view, por rodar com o privilégio de quem a criou, ignora essa
+-- RLS — é justamente o mesmo motivo pelo qual ela existe.
+drop policy if exists "pda_arquivos_select_public_confirmed" on storage.objects;
+create policy "pda_arquivos_select_public_confirmed" on storage.objects
+  for select
+  using (
+    bucket_id = 'pda-arquivos'
+    and exists (
+      select 1 from public.public_datasets d
+      where d.data ->> 'q22_arquivo_recurso_path' = storage.objects.name
+         or d.data ->> 'q25_arquivo_dicionario_path' = storage.objects.name
+    )
+  );
+
 -- ============================================================================
 -- Cadastro de usuários:
 --
