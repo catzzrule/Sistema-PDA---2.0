@@ -1,11 +1,12 @@
 // Ponto de entrada: monta o painel de marca do login/troca de senha (compartilhado
 // entre as duas telas via <template>, evitando duplicar o SVG/marca em cada uma)
-// e inicializa a autenticação. wizard.js, admin.js e ouvidoria.js se
-// auto-registram ao serem importados (event listeners), e auth.js os aciona
-// conforme o perfil de quem loga (área, CGTI ou ouvidoria).
+// e inicializa a autenticação. wizard.js, admin.js, ouvidoria.js e
+// atrasos-mock.js se auto-registram ao serem importados (event listeners), e
+// auth.js os aciona conforme o perfil de quem loga (área, CGTI ou ouvidoria).
 import './wizard.js';
 import './admin.js';
 import './ouvidoria.js';
+import './atrasos-mock.js';
 import { initAuth } from './auth.js';
 
 function mountAuthBrandPanels() {

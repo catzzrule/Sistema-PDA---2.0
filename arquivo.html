@@ -12,7 +12,9 @@
   <link rel="stylesheet" href="css/file-viewer.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    body { background: #f8fafc; }
+    body {
+      background: #f8fafc;
+    }
 
     .arquivo-topbar {
       display: flex;
@@ -25,7 +27,9 @@
       border-bottom: 1px solid var(--border-color);
     }
 
-    .arquivo-topbar strong { color: var(--text-main); }
+    .arquivo-topbar strong {
+      color: var(--text-main);
+    }
 
     .arquivo-topbar a {
       color: var(--primary-blue);
@@ -36,15 +40,23 @@
       gap: 0.35rem;
       white-space: nowrap;
     }
-    .arquivo-topbar a:hover { text-decoration: underline; }
 
-    #arquivo-content { flex: 1; display: flex; flex-direction: column; }
+    .arquivo-topbar a:hover {
+      text-decoration: underline;
+    }
+
+    #arquivo-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
 
     .public-state {
       text-align: center;
       padding: 4rem 1.5rem;
       color: var(--text-muted);
     }
+
     .public-state i {
       font-size: 2.2rem;
       margin-bottom: 1rem;

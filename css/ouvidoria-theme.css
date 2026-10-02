@@ -1,0 +1,241 @@
+/* Tema creme/amarelo exclusivo do Painel da Ouvidoria e do Dashboard de
+   Atrasos — tudo escopado dentro de .theme-ouvidoria, então não afeta a
+   tela de login, a Área nem o painel da CGTI, que continuam no tema azul
+   padrão (ver css/base.css e css/admin.css). */
+
+.theme-ouvidoria {
+  --ouv-bg: #fffbeb;
+  --ouv-card-bg: #fef3c7;
+  --ouv-card-border: #fde68a;
+  --ouv-table-bg: #fffdf5;
+  --ouv-text: #78350f;
+  --ouv-text-muted: #92723a;
+  background: var(--ouv-bg);
+  margin: 0 -1.5rem;
+  padding: 2rem 1.5rem 3rem;
+}
+
+.theme-ouvidoria .admin-header-bar h2 { color: var(--ouv-text); }
+.theme-ouvidoria .admin-header-bar p { color: var(--ouv-text-muted); }
+
+.theme-ouvidoria .metric-card {
+  background: var(--ouv-card-bg);
+  border-color: var(--ouv-card-border);
+}
+
+.theme-ouvidoria .metric-icon.red { background: #fee2e2; color: #dc2626; }
+
+.theme-ouvidoria .admin-search-box input {
+  background: var(--ouv-card-bg);
+  border-color: var(--ouv-card-border);
+}
+
+.theme-ouvidoria .table-responsive {
+  background: var(--ouv-table-bg);
+  border-color: var(--ouv-card-border);
+}
+
+.theme-ouvidoria .admin-table th {
+  background: var(--ouv-card-bg);
+  color: var(--ouv-text-muted);
+  border-color: var(--ouv-card-border);
+}
+
+.theme-ouvidoria .admin-table td {
+  border-color: #f6e9bf;
+}
+
+.theme-ouvidoria .admin-table tbody tr:hover { background: #fef9ec; }
+
+/* Status em bolinha colorida + texto, em vez de badge preenchido */
+.theme-ouvidoria .badge-status {
+  background: transparent !important;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.theme-ouvidoria .badge-status::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
+
+.theme-ouvidoria .mock-notice {
+  background: #fef3c7;
+  border: 1px solid #fde68a;
+  color: #78350f;
+  border-radius: var(--radius-md);
+  padding: 0.85rem 1.1rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+}
+
+/* ---------------------------------------------------------------------
+   Dashboard de Atrasos
+--------------------------------------------------------------------- */
+.atrasos-grid {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .atrasos-grid { grid-template-columns: 1fr; }
+}
+
+.atrasos-sidebar-card, .atrasos-main-card {
+  background: var(--ouv-table-bg);
+  border: 1px solid var(--ouv-card-border);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+}
+
+.atrasos-sidebar-card h4, .atrasos-main-card h4 {
+  color: var(--ouv-text);
+  font-size: 1rem;
+  margin-bottom: 0.2rem;
+}
+
+.atrasos-sidebar-subtitle {
+  font-size: 0.8rem;
+  color: var(--ouv-text-muted);
+  margin-bottom: 1rem;
+}
+
+.atrasos-main-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.atrasos-area-row {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #f6e9bf;
+}
+.atrasos-area-row:last-child { border-bottom: none; }
+
+.atrasos-area-row-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.25rem;
+}
+
+.atrasos-area-name {
+  font-weight: 700;
+  color: var(--ouv-text);
+  font-size: 0.9rem;
+}
+
+.atrasos-area-count {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #dc2626;
+}
+
+.atrasos-area-meta {
+  font-size: 0.78rem;
+  color: var(--ouv-text-muted);
+}
+
+.atraso-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.atraso-badge.severe { background: #fee2e2; color: #991b1b; }
+.atraso-badge.moderate { background: #ffedd5; color: #9a3412; }
+.atraso-badge.mild { background: #fef9c3; color: #854d0e; }
+
+.atrasos-base-title { font-weight: 600; color: var(--ouv-text); }
+.atrasos-base-periodicidade { font-size: 0.78rem; color: var(--ouv-text-muted); }
+
+.atrasos-nunca-enviou { color: var(--ouv-text-muted); font-style: italic; }
+
+.atrasos-timeline-row {
+  display: grid;
+  grid-template-columns: 180px 1fr 110px;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.9rem;
+}
+
+.atrasos-timeline-label {
+  font-size: 0.82rem;
+  color: var(--ouv-text);
+}
+.atrasos-timeline-label strong { display: block; font-size: 0.78rem; }
+.atrasos-timeline-label span { color: var(--ouv-text-muted); font-size: 0.75rem; }
+
+.atrasos-timeline-track {
+  background: #f6e9bf;
+  border-radius: 999px;
+  height: 10px;
+  overflow: hidden;
+}
+
+.atrasos-timeline-bar {
+  height: 100%;
+  border-radius: 999px;
+}
+.atrasos-timeline-bar.severe { background: #f87171; }
+.atrasos-timeline-bar.moderate { background: #fb923c; }
+.atrasos-timeline-bar.mild { background: #facc15; }
+
+.atrasos-timeline-days {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--ouv-text);
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* ---------------------------------------------------------------------
+   Abas de navegação no cabeçalho (Painel da Ouvidoria / Dashboard de Atrasos)
+--------------------------------------------------------------------- */
+.header-nav-tabs {
+  display: flex;
+  gap: 0.25rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 10px;
+  padding: 0.25rem;
+}
+
+.header-nav-tab {
+  background: transparent;
+  border: none;
+  color: #cbd5e1;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 0.5rem 0.9rem;
+  border-radius: 7px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.header-nav-tab:hover { color: #ffffff; }
+
+.header-nav-tab.active {
+  background: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+}
+
+@media (max-width: 900px) {
+  .header-nav-tabs { order: 3; width: 100%; justify-content: center; }
+}

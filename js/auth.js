@@ -6,6 +6,7 @@ import { showToast } from './toast.js';
 import { enterUserView } from './wizard.js';
 import { enterAdminView } from './admin.js';
 import { enterOuvidoriaView } from './ouvidoria.js';
+import { enterAtrasosView } from './atrasos-mock.js';
 
 const authScreen = document.getElementById('auth-screen');
 const appShell = document.getElementById('app-shell');
@@ -14,11 +15,16 @@ const forcePasswordView = document.getElementById('force-password-view');
 const userView = document.getElementById('user-view');
 const adminView = document.getElementById('admin-view');
 const ouvidoriaView = document.getElementById('ouvidoria-view');
+const atrasosView = document.getElementById('atrasos-view');
 const headerActions = document.getElementById('header-actions-authenticated');
 const btnFillDemo = document.getElementById('btn-fill-demo');
 const btnToggleAdmin = document.getElementById('btn-toggle-admin');
 const userBadgeText = document.getElementById('user-badge-text');
 const btnLogout = document.getElementById('btn-logout');
+
+const ouvidoriaNavTabs = document.getElementById('ouvidoria-nav-tabs');
+const btnNavOuvPainel = document.getElementById('btn-nav-ouv-painel');
+const btnNavOuvAtrasos = document.getElementById('btn-nav-ouv-atrasos');
 
 const ROLE_LABELS = { master: 'CGTI (Master)', ouvidoria: 'Ouvidoria', normal: 'Área' };
 
@@ -47,6 +53,7 @@ function showLoginView() {
   forcePasswordView.style.display = 'none';
   headerActions.style.display = 'none';
   btnToggleAdmin.style.display = 'none';
+  ouvidoriaNavTabs.style.display = 'none';
   loginForm.reset();
   loginError.style.display = 'none';
 }
@@ -64,6 +71,7 @@ function hideAppViews() {
   userView.style.display = 'none';
   adminView.style.display = 'none';
   ouvidoriaView.style.display = 'none';
+  atrasosView.style.display = 'none';
 }
 
 function showUserView() {
@@ -83,14 +91,33 @@ async function showAdminView() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+function setOuvidoriaNavActive(tab) {
+  btnNavOuvPainel.classList.toggle('active', tab === 'painel');
+  btnNavOuvAtrasos.classList.toggle('active', tab === 'atrasos');
+}
+
 async function showOuvidoriaView() {
   authScreen.style.display = 'none';
   appShell.style.display = 'block';
   hideAppViews();
   ouvidoriaView.style.display = 'block';
+  setOuvidoriaNavActive('painel');
   await enterOuvidoriaView();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
+
+function showAtrasosView() {
+  authScreen.style.display = 'none';
+  appShell.style.display = 'block';
+  hideAppViews();
+  atrasosView.style.display = 'block';
+  setOuvidoriaNavActive('atrasos');
+  enterAtrasosView();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+btnNavOuvPainel?.addEventListener('click', showOuvidoriaView);
+btnNavOuvAtrasos?.addEventListener('click', showAtrasosView);
 
 function updateUserBadge(profile) {
   userBadgeText.textContent = `${profile.area || profile.email} • ${ROLE_LABELS[profile.role] || profile.role}`;
@@ -103,6 +130,9 @@ async function enterAuthenticatedArea(profile) {
   // O botão de alternar pro Painel Admin só existe pra CGTI (master já podia
   // pré-visualizar a tela de formulário; ouvidoria não precisa disso).
   btnToggleAdmin.style.display = profile.role === 'master' ? 'inline-flex' : 'none';
+  // Abas de navegação (Painel da Ouvidoria / Dashboard de Atrasos) só fazem
+  // sentido pra quem está logado como ouvidoria.
+  ouvidoriaNavTabs.style.display = profile.role === 'ouvidoria' ? 'flex' : 'none';
 
   if (profile.role === 'master') {
     await showAdminView();
