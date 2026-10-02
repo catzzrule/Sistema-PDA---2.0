@@ -1,51 +1,15 @@
-/* Tema creme/amarelo exclusivo do Painel da Ouvidoria e do Dashboard de
-   Atrasos — tudo escopado dentro de .theme-ouvidoria, então não afeta a
-   tela de login, a Área nem o painel da CGTI, que continuam no tema azul
-   padrão (ver css/base.css e css/admin.css). */
+/* Estilos exclusivos do Painel da Ouvidoria e do Dashboard de Atrasos,
+   escopados em .theme-ouvidoria — usa a mesma paleta neutra do resto do
+   sistema (tentamos um tema creme/amarelo antes, mas não ficou bom). */
 
 .theme-ouvidoria {
-  --ouv-bg: #fffbeb;
-  --ouv-card-bg: #fef3c7;
-  --ouv-card-border: #fde68a;
-  --ouv-table-bg: #fffdf5;
-  --ouv-text: #78350f;
-  --ouv-text-muted: #92723a;
-  background: var(--ouv-bg);
+  --ouv-text: var(--text-main);
+  --ouv-text-muted: var(--text-muted);
   margin: 0 -1.5rem;
   padding: 2rem 1.5rem 3rem;
 }
 
-.theme-ouvidoria .admin-header-bar h2 { color: var(--ouv-text); }
-.theme-ouvidoria .admin-header-bar p { color: var(--ouv-text-muted); }
-
-.theme-ouvidoria .metric-card {
-  background: var(--ouv-card-bg);
-  border-color: var(--ouv-card-border);
-}
-
 .theme-ouvidoria .metric-icon.red { background: #fee2e2; color: #dc2626; }
-
-.theme-ouvidoria .admin-search-box input {
-  background: var(--ouv-card-bg);
-  border-color: var(--ouv-card-border);
-}
-
-.theme-ouvidoria .table-responsive {
-  background: var(--ouv-table-bg);
-  border-color: var(--ouv-card-border);
-}
-
-.theme-ouvidoria .admin-table th {
-  background: var(--ouv-card-bg);
-  color: var(--ouv-text-muted);
-  border-color: var(--ouv-card-border);
-}
-
-.theme-ouvidoria .admin-table td {
-  border-color: #f6e9bf;
-}
-
-.theme-ouvidoria .admin-table tbody tr:hover { background: #fef9ec; }
 
 /* Status em bolinha colorida + texto, em vez de badge preenchido */
 .theme-ouvidoria .badge-status {
@@ -65,9 +29,9 @@
 }
 
 .theme-ouvidoria .mock-notice {
-  background: #fef3c7;
-  border: 1px solid #fde68a;
-  color: #78350f;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  color: #1e3a8a;
   border-radius: var(--radius-md);
   padding: 0.85rem 1.1rem;
   margin-bottom: 1.5rem;
@@ -92,8 +56,8 @@
 }
 
 .atrasos-sidebar-card, .atrasos-main-card {
-  background: var(--ouv-table-bg);
-  border: 1px solid var(--ouv-card-border);
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   padding: 1.25rem;
 }
@@ -121,7 +85,7 @@
 
 .atrasos-area-row {
   padding: 0.75rem 0;
-  border-bottom: 1px solid #f6e9bf;
+  border-bottom: 1px solid var(--border-color);
 }
 .atrasos-area-row:last-child { border-bottom: none; }
 
@@ -183,7 +147,7 @@
 .atrasos-timeline-label span { color: var(--ouv-text-muted); font-size: 0.75rem; }
 
 .atrasos-timeline-track {
-  background: #f6e9bf;
+  background: #e2e8f0;
   border-radius: 999px;
   height: 10px;
   overflow: hidden;
